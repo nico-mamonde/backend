@@ -23,7 +23,7 @@ const routerCart = express.Router();
 app.use('/api/productos', routerProducts);
 app.use('/api/carrito', routerCart);
 
-/* ------------------------ Product Endpoints ------------------------ */
+/* ------------------------ Productos Endpoints ------------------------ */
 
 // GET api/productos
 routerProducts.get('/', async (req, res) => {
@@ -38,7 +38,7 @@ routerProducts.get('/:id', async (req, res) => {
     
     product
         ? res.status(200).json(product)
-        : res.status(400).json({"error": "product not found"})
+        : res.status(400).json({"error": ""})
 })
 
 // POST api/productos
@@ -50,8 +50,8 @@ routerProducts.post('/',authMiddleware, async (req,res, next) => {
     const newProductId = await contenedor.save(body);
     
     newProductId
-        ? res.status(200).json({"success" : "product added with ID: "+newProductId})
-        : res.status(400).json({"error": "invalid key. Please verify the body content"})
+        ? res.status(200).json({"success" : "producto añadido con ID: "+newProductId})
+        : res.status(400).json({"error": "Por favor verifique el contenido del texto"})
 })
 
 // PUT api/productos/:id
@@ -61,8 +61,8 @@ routerProducts.put('/:id', authMiddleware ,async (req, res, next) => {
     const wasUpdated = await contenedor.updateById(id,body);
     
     wasUpdated
-        ? res.status(200).json({"success" : "product updated"})
-        : res.status(404).json({"error": "product not found"})
+        ? res.status(200).json({"success" : "producto actualizado"})
+        : res.status(404).json({"error": "producto no encontrado"})
 })
 
 
@@ -72,8 +72,8 @@ routerProducts.delete('/:id', authMiddleware, async (req, res, next) => {
     const wasDeleted = await contenedor.deleteById(id);
     
     wasDeleted 
-        ? res.status(200).json({"success": "product successfully removed"})
-        : res.status(404).json({"error": "product not found"})
+    ? res.status(200).json({"success" : "producto actualizado"})
+    : res.status(404).json({"error": "producto no encontrado"})
 })
 
 /* ------------------------ Cart Endpoints ------------------------ */
@@ -88,8 +88,8 @@ routerCart.post('/', async(req, res) => {
     const newCartId = await carrito.save(body);
     
     newCartId
-        ? res.status(200).json({"success" : "cart added with ID: "+newCartId})
-        : res.status(400).json({"error": "invalid key. Please verify the body content"})
+        ? res.status(200).json({"success" : "carrito agregado con ID: "+newCartId})
+        : res.status(400).json({"error": "clave no válida. Por favor verifique el contenido del cuerpo."})
     
 })
 
@@ -98,9 +98,10 @@ routerCart.delete('/:id', async (req, res) => {
     const {id} = req.params;
     const wasDeleted = await carrito.deleteById(id);
     
+
     wasDeleted 
-        ? res.status(200).json({"success": "cart successfully removed"})
-        : res.status(404).json({"error": "cart not found"})
+        ? res.status(200).json({"success": "carrito eliminado correctamente"})
+        : res.status(404).json({"error": "producto no encontrado"})
 })
 
 // POST /api/carrito/:id/productos
@@ -113,12 +114,13 @@ routerCart.post('/:id/productos', async(req,res) => {
     if (product) {
         const cartExist = await carrito.addToArrayById(id, {"products": product});
         cartExist
-            ? res.status(200).json({"success" : "product added"})
-            : res.status(404).json({"error": "cart not found"})
+            ? res.status(200).json({"success" : "producto agregado"})
+            : res.status(404).json({"error": "producto no encontrado"})
     } else {
-        res.status(404).json({"error": "product not found, verify the ID in the body content is correct."})
+        res.status(404).json({"error": "Producto no encontrado, verifique que la identificación en el contenido del cuerpo sea correcta"})
     }
 })
+
 
 // GET /api/carrito/:id/productos
 routerCart.get('/:id/productos', async(req, res) => {
@@ -127,7 +129,7 @@ routerCart.get('/:id/productos', async(req, res) => {
     
     cart
         ? res.status(200).json(cart.products)
-        : res.status(404).json({"error": "cart not found"})
+        : res.status(404).json({"error": "producto no encontrado"})
 })
 
 // DELETE /api/carrito/:id/productos/:id_prod
@@ -137,10 +139,10 @@ routerCart.delete('/:id/productos/:id_prod', async(req, res) => {
     if (productExists) {
         const cartExists = await carrito.removeFromArrayById(id, id_prod, 'products')
         cartExists
-            ? res.status(200).json({"success" : "product removed"})
-            : res.status(404).json({"error": "cart not found"})
+            ? res.status(200).json({"success" : "producto removido"})
+            : res.status(404).json({"error": "producto no encontrado"})
     } else {
-        res.status(404).json({"error": "product not found"})
+        res.status(404).json({"error": "producto no encontrado"})
     }
 })
 
